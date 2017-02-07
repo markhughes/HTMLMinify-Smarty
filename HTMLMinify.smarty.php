@@ -14,6 +14,17 @@ define('MINIFY_HTML', '<[!/]?[a-zA-Z\d:.-]+[\s\S]*?>');
 define('MINIFY_HTML_ENT', '&(?:[a-zA-Z\d]+|\#\d+|\#x[a-fA-F\d]+);');
 define('MINIFY_HTML_KEEP', '<pre(?:\s[^<>]*?)?>[\s\S]*?</pre>|<code(?:\s[^<>]*?)?>[\s\S]*?</code>|<script(?:\s[^<>]*?)?>[\s\S]*?</script>|<style(?:\s[^<>]*?)?>[\s\S]*?</style>|<textarea(?:\s[^<>]*?)?>[\s\S]*?</textarea>');
 
+// by default we minify URLs
+if ( ! defined("HTML_MINIFY_URL_ENABLED")) {
+	define("HTML_MINIFY_URL_ENABLED", true);
+}
+
+// by default we minify inline CSS
+if ( ! defined("HTML_MINIFY_INLINE_CSS_ENABLED")) {
+	define("HTML_MINIFY_INLINE_CSS_ENABLED", true);
+}
+
+
 // get URL
 if ( ! defined("HTML_MINIFY_URL")) {
 	$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] === 443 ? 'https' : 'http') . '://';
@@ -184,13 +195,13 @@ function fn_minify_html_union($input, $quote) {
     return preg_replace_callback('#<\s*([^\/\s]+)\s*(?:>|(\s[^<>]+?)\s*>)#', function($m) use($quote, $url) {
         if (isset($m[2])) {
             // Minify inline CSS(s)
-            if (stripos($m[2], ' style=') !== false) {
+            if (stripos($m[2], ' style=') !== false && HTML_MINIFY_INLINE_CSS_ENABLED) {
                 $m[2] = preg_replace_callback('#( style=)([\'"]?)(.*?)\2#i', function($m) {
                     return $m[1] . $m[2] . fn_minify_css($m[3]) . $m[2];
                 }, $m[2]);
             }
             // Minify URL(s)
-            if (strpos($m[2], '://') !== false) {
+            if (strpos($m[2], '://') !== false && HTML_MINIFY_URL_ENABLED) {
                 $m[2] = str_replace([
                     $url . '/',
                     $url . '?',
