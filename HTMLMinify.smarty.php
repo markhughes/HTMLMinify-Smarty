@@ -106,20 +106,20 @@ function fn_minify_css_union($input) {
     $input = preg_replace([
         // Fix case for `#foo<space>[bar="baz"]`, `#foo<space>*` and `#foo<space>:first-child` [^1]
         '#(?<=[\w])\s+(\*|\[|:[\w-]+)#',
-        // Fix case for `[bar="baz"]<space>.foo`, `*<space>.foo` and `@media<space>(foo: bar)<space>and<space>(baz: qux)` [^2]
-        '#(\*|\])\s+(?=[\w\#.])#', '#\b\s+\(#', '#\)\s+\b#',
+        // Fix case for `[bar="baz"]<space>.foo`, `*<space>.foo`, `:nth-child(2)<space>.foo` and `@media<space>(foo: bar)<space>and<space>(baz: qux)` [^2]
+        '#([*\]\)])\s+(?=[\w\#.])#', '#\b\s+\(#', '#\)\s+\b#',
         // Minify HEX color code … [^3]
         '#\#([a-f\d])\1([a-f\d])\2([a-f\d])\3\b#i',
         // Remove white–space(s) around punctuation(s) [^4]
         '#\s*([~!@*\(\)+=\{\}\[\]:;,>\/])\s*#',
         // Replace zero unit(s) with `0` [^5]
-        '#\b(?:0\.)?0([a-z]+\b|%)#i',
+        '#\b(?:0\.)?0([a-z]+\b)#i',
         // Replace `0.6` with `.6` [^6]
         '#\b0+\.(\d+)#',
         // Replace `:0 0`, `:0 0 0` and `:0 0 0 0` with `:0` [^7]
         '#:(0\s+){0,3}0(?=[!,;\)\}]|$)#',
         // Replace `background(?:-position)?:(0|none)` with `background$1:0 0` [^8]
-        '#\b(background(?:-position)?):(0|none)\b#i',
+        '#\b(background(?:-position)?):(?:0|none)([;,\}])#i',
         // Replace `(border(?:-radius)?|outline):none` with `$1:0` [^9]
         '#\b(border(?:-radius)?|outline):none\b#i',
         // Remove empty selector(s) [^10]
