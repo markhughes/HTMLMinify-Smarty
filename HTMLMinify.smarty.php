@@ -252,6 +252,6 @@ function fn_minify_html_union_attr($input) {
 }
 
 // used for smarty hook
-function minify_html($tpl_output, Smarty_Internal_Template $template) {
+function minify_html($tpl_output, $template) {
 	return fn_minify_html($tpl_output);
 }
