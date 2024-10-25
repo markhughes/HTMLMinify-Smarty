@@ -24,6 +24,11 @@ if ( ! defined("HTML_MINIFY_INLINE_CSS_ENABLED")) {
 	define("HTML_MINIFY_INLINE_CSS_ENABLED", true);
 }
 
+// by default we don't keep SSI comments
+if ( ! defined("HTML_MINIFY_KEEP_SSI")) {
+    define("HTML_MINIFY_KEEP_SSI", false);
+}
+
 
 // get URL
 if ( ! defined("HTML_MINIFY_URL")) {
@@ -165,6 +170,9 @@ function fn_minify_html($input, $comment = 2, $quote = 1) {
         if ($part !== ' ' && trim($part) === "" || $comment !== 1 && strpos($part, '<!--') === 0) {
             // Detect IE conditional comment(s) by its closing tag …
             if ($comment === 2 && substr($part, -12) === '<![endif]-->') {
+                $output .= $part;
+            }
+            if (HTML_MINIFY_KEEP_SSI && strpos($part, '<!--#') === 0) {
                 $output .= $part;
             }
             continue;
