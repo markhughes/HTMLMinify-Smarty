@@ -2,6 +2,10 @@
 
 A simple Smarty filter for minifying HTML.
 
+## Hey this works but...
+
+This works, but you may not need this. Most servers these days use gzip, brotli, etc. Although some use cases like obfuscation may apply.
+
 ## Installation
 
 Copy `HTMLMinify.smarty.php` into your installation and included it.
